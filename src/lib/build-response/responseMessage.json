@@ -1,0 +1,26 @@
+{
+  "S0000": {
+    "user_message": "Success",
+    "developer_message": "Success"
+  },
+  "E0000": {
+    "user_message": "Data Not Found",
+    "developer_message": "Data Not Found"
+  },
+  "E0001": {
+    "user_message": "System Error",
+    "developer_message": "System Error"
+  },
+  "E0004": {
+    "user_message": "Partner API Backend Error",
+    "developer_message": "Partner API Backend Error"
+  },
+  "E0002": {
+    "user_message": "Decryption Request is Failed",
+    "developer_message": "Decryption Request is Failed"
+  },
+  "E0003": {
+    "user_message": "Request is Incorrect",
+    "developer_message": "Request is Incorrect"
+  }
+}
