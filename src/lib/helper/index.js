@@ -10,9 +10,6 @@ const Encryption = require("../security/Encryption");
 
 const encryption = new Encryption();
 
-const formatTemplate = "YYYY-MM-DD[T]HH:mm:ss";
-const timeZone = process.env.TIMEZONE || "Asia/Bangkok";
-
 const validateObjectToSchema = (object, schema) => {
   const { success, data, error } = schema.safeParse(object);
 
@@ -47,7 +44,7 @@ const allowHeaders = (headers = {}) => {
 };
 const decryptBody = (body, key) => {
   try {
-    const bodyM = JSON.parse(body);
+    const bodyM = body;
     const resBody = encryption.decrypt256GCM(bodyM.data, key);
     return { success: true, data: JSON.parse(resBody), error: undefined };
   } catch (error) {
@@ -56,7 +53,7 @@ const decryptBody = (body, key) => {
   }
 };
 
-const decryptRequestBody = ({ event, isEncrypt, key_secret }) => {
+const decryptRequestBody = ({ req, isEncrypt, keySecret }) => {
   let response = { status: true, data: null };
   if (process.env.IS_ENCRYPT === "Y") {
     console.log("Decrypt Body ::");
@@ -64,21 +61,22 @@ const decryptRequestBody = ({ event, isEncrypt, key_secret }) => {
       success: successDecrypt,
       data: body,
       errors: errDecrypt,
-    } = decryptBody(event.body, key_secret);
+    } = decryptBody(req.body, keySecret);
     if (!successDecrypt) {
       response.data = responsePartnerAPI({
         isEncrypt,
+        keySecret,
         responses: responseMessage,
         statusCode: 400,
         responseData: { errors: errDecrypt },
-        responseCode: "E9002",
+        responseCode: "E0002",
       });
       response.status = false;
       return response;
     }
     response.data = body;
   } else {
-    response.data = JSON.parse(event.body);
+    response.data = req.body;
   }
   return response;
 };

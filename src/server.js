@@ -5,6 +5,7 @@ const cors = require("cors");
 const morgan = require("morgan");
 const helmet = require("helmet");
 const userRouter = require("./api/router/profile.route");
+const authRouter = require("./api/router/authentication.route");
 
 dotenv.config();
 
@@ -17,6 +18,7 @@ app.use(morgan("combined"));
 app.use(helmet());
 
 app.use("/api", userRouter);
+app.use("/api", authRouter);
 
 app.use((err, req, res, next) => {
   console.error(err.stack);

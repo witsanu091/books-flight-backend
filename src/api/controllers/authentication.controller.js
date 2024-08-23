@@ -21,8 +21,8 @@ exports.signIn = async (req, res, next) => {
 };
 
 exports.signOn = async (req, res, next) => {
-  let isEncrypt = process.env.IS_ENCRYPT;
-  let keySecret = process.env.KEY_SECRET;
+  const isEncrypt = process.env.IS_ENCRYPT;
+  const keySecret = process.env.KEY_SECRET;
   try {
     const responseDecryptBody = decryptRequestBody({
       req,
@@ -31,7 +31,7 @@ exports.signOn = async (req, res, next) => {
     });
 
     if (!responseDecryptBody.status) {
-      return responseDecryptBody.data;
+      return res.json(responseDecryptBody.data);
     }
     bodyDecrypt = responseDecryptBody.data;
     console.log("bodyDecrypt ::", bodyDecrypt);
@@ -43,18 +43,20 @@ exports.signOn = async (req, res, next) => {
     } = validateObjectToSchema(bodyDecrypt, userSchema);
 
     if (!success) {
-      return responsePartnerAPI({
-        isEncrypt,
-        keySecret,
-        responses: responseMessage,
-        statusCode: 400,
-        responseData: { errors },
-        responseCode: "E9003",
-      });
+      return res.json(
+        responsePartnerAPI({
+          isEncrypt,
+          keySecret,
+          responses: responseMessage,
+          statusCode: 400,
+          responseData: { errors },
+          responseCode: "E0003",
+        })
+      );
     }
     console.log("🚀  body:", body);
-    const activities = await authService.signOnService(body);
-    res.json(activities);
+    // const activities = await authService.signOnService(body);
+    // res.json(activities);
   } catch (error) {
     next(error); // pass the error to the error handling middleware
   }

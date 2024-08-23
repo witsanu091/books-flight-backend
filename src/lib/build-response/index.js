@@ -15,13 +15,13 @@ const respond = (responses, statusCode, responseData, responseCode) => {
   return {
     isBase64Encoded: false,
     statusCode,
-    body: JSON.stringify({
+    body: {
       // ...responses[responseCode][language.toUpperCase()],
       ...responses[responseCode],
       response_date_time: formatResponseDate,
       response_code: responseCode,
       response_data: responseData,
-    }),
+    },
   };
 };
 

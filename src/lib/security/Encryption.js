@@ -8,6 +8,7 @@ class Encryption {
     this.aes256gcm = "aes-256-gcm";
     this.aes256cbc = "aes-256-cbc";
     this.sha256 = "sha256";
+    this.ivLen = 12;
   }
 
   HmacSHA256(key, text) {
@@ -68,7 +69,7 @@ class Encryption {
     const tag_length = 128;
 
     // random initialization vector
-    const iv = crypto.randomBytes(this.ekycivlen);
+    const iv = crypto.randomBytes(this.ivLen);
 
     // Buffer base64 AES Key
     const encryptKeyDecode = Buffer.from(key, "base64");
@@ -100,16 +101,16 @@ class Encryption {
    * @param String key using 32 byte key length
    * @returns String decrypted (original) text
    */
-  decrypt256GCM(encdata, key) {
-    console.log("encdata, key ::", encdata, key);
+  decrypt256GCM(encryptData, key) {
+    console.log("encryptData, key ::", encryptData, key);
     // Buffer base64 AES Key
     const encryptKeyDecode = Buffer.from(key, "base64");
 
     // base64 decoding
-    const bData = Buffer.from(encdata, "base64");
+    const bData = Buffer.from(encryptData, "base64");
 
     // convert data to buffers
-    const iv = bData.slice(0, this.ekycivlen);
+    const iv = bData.slice(0, this.ivLen);
     const tag = bData.slice(bData.length - 16);
     const text = bData.slice(12, bData.length - 16);
 

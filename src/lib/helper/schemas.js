@@ -1,11 +1,16 @@
 const { z } = require("zod");
 
+const dateTimeRegex = /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/;
+
 const userSchema = z.object({
-  user_id: z.string().uuid().optional(),
+  user_id: z.string().uuid(),
   first_name: z.string().min(2).max(255),
   last_name: z.string().min(2).max(255),
   email: z.string().email(),
-  dob: z.date().optional(),
+  dob: z
+    .string()
+    .regex(dateTimeRegex, "Date must be in the format YYYY-MM-DD HH:mm:ss")
+    .optional(),
   mobile: z
     .string()
     .regex(/^[0-9]+$/)
@@ -15,8 +20,14 @@ const userSchema = z.object({
   gender: z.enum(["Male", "Female", "Other"]).optional(),
   user_name: z.string().min(3).max(255),
   password: z.string().min(8).max(255),
-  created_on: z.date().default(new Date()),
-  updated_on: z.date().default(new Date()),
+  created_on: z
+    .string()
+    .regex(dateTimeRegex, "Date must be in the format YYYY-MM-DD HH:mm:ss")
+    .default(() => new Date().toISOString().slice(0, 19).replace("T", " ")),
+  updated_on: z
+    .string()
+    .regex(dateTimeRegex, "Date must be in the format YYYY-MM-DD HH:mm:ss")
+    .default(() => new Date().toISOString().slice(0, 19).replace("T", " ")),
   enabled: z.boolean().default(true),
 });
 
