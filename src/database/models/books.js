@@ -60,7 +60,6 @@ const model = (Sequelize, DataTypes) => {
       tableName: "books",
       createdAt: false,
       updatedAt: false,
-      schema: "public", // default: public, PostgreSQL only.
     }
   );
 };

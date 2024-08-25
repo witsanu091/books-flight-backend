@@ -34,7 +34,6 @@ const model = (Sequelize, DataTypes) => {
       tableName: "airline",
       createdAt: false,
       updatedAt: false,
-      schema: "public", // default: public, PostgreSQL only.
     }
   );
 };

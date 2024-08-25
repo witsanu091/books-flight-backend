@@ -25,7 +25,6 @@ const model = (Sequelize, DataTypes) => {
       tableName: "user_role",
       createdAt: false,
       updatedAt: false,
-      schema: "public", // default: public, PostgreSQL only.
     }
   );
 };
