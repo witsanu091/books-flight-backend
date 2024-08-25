@@ -1,14 +1,17 @@
-const moment = require("moment-timezone");
-
 const { v4: uuid } = require("uuid");
-
+const moment = require("moment-timezone");
 const responseMessage = require("../build-response/responseMessage.json");
-
 const { responsePartnerAPI } = require("../formatBuildAPI/buildResponseParam");
-
 const Encryption = require("../security/Encryption");
+const ServiceHistoryLogRepository = require("../../database/repository/ServiceHistoryLogRepository");
 
 const encryption = new Encryption();
+
+const genUUID = () => {
+  const UUID = uuid();
+  const timestamp = String(Math.round(new Date().getTime() / 1000));
+  return UUID.concat(timestamp);
+};
 
 const validateObjectToSchema = (object, schema) => {
   const { success, data, error } = schema.safeParse(object);
@@ -81,6 +84,21 @@ const decryptRequestBody = ({ req, isEncrypt, keySecret }) => {
   return response;
 };
 
+const insertServiceHistoryLog = async ({ request, response, type, status }) => {
+  return ServiceHistoryLogRepository.add({
+    request,
+    response,
+    type,
+    status,
+    created_on: moment()
+      .tz(process.env.TIMEZONE)
+      .format(process.env.DATETIMEFORMAT),
+    updated_on: moment()
+      .tz(process.env.TIMEZONE)
+      .format(process.env.DATETIMEFORMAT),
+  });
+};
+
 module.exports = {
   detectLanguageFromHeaders,
   errorIsItemNotFound,
@@ -88,4 +106,6 @@ module.exports = {
   allowHeaders,
   decryptBody,
   decryptRequestBody,
+  genUUID,
+  insertServiceHistoryLog,
 };

@@ -3,7 +3,7 @@ const { z } = require("zod");
 const dateTimeRegex = /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/;
 
 const userSchema = z.object({
-  user_id: z.string().uuid(),
+  // user_id: z.string().uuid().optional(),
   first_name: z.string().min(2).max(255),
   last_name: z.string().min(2).max(255),
   email: z.string().email(),
@@ -29,8 +29,16 @@ const userSchema = z.object({
     .regex(dateTimeRegex, "Date must be in the format YYYY-MM-DD HH:mm:ss")
     .default(() => new Date().toISOString().slice(0, 19).replace("T", " ")),
   enabled: z.boolean().default(true),
+  user_role: z.string().min(2).max(20),
+});
+
+const userSignInSchema = z.object({
+  user_name: z.string().min(3).max(255),
+  password: z.string().min(8).max(255),
+  user_role: z.string().min(2).max(20),
 });
 
 module.exports = {
   userSchema,
+  userSignInSchema,
 };

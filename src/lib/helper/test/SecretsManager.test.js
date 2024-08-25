@@ -1,4 +1,3 @@
-/* eslint-disable import/no-extraneous-dependencies */
 const {
   SecretsManagerClient,
   GetSecretValueCommand,
@@ -6,19 +5,19 @@ const {
   PutSecretValueCommand,
   UpdateSecretCommand,
   DeleteSecretCommand,
-} = require('@aws-sdk/client-secrets-manager');
+} = require("@aws-sdk/client-secrets-manager");
 
-const { mockClient } = require('aws-sdk-client-mock');
-const { faker } = require('@faker-js/faker');
+const { mockClient } = require("aws-sdk-client-mock");
+const { faker } = require("@faker-js/faker");
 
-const SecretsManager = require('../SecretsManager');
+const SecretsManager = require("../SecretsManager");
 
 const client = new SecretsManagerClient({
-  region: 'ap-southeast-1',
+  region: "ap-southeast-1",
 });
 
-describe('AWS Secrets Manager', () => {
-  describe('Case sucess', () => {
+describe("AWS Secrets Manager", () => {
+  describe("Case sucess", () => {
     const clientMock = mockClient(client);
     const secretMock = new SecretsManager(clientMock);
 
@@ -27,15 +26,15 @@ describe('AWS Secrets Manager', () => {
     afterEach(() => {
       jest.clearAllMocks();
     });
-    test('should returned sucess Create secrete ', async () => {
+    test("should returned sucess Create secrete ", async () => {
       const expected = { my_cat_name: faker.animal.cat() };
       clientMock.on(CreateSecretCommand).resolves(expected);
-      const received = await secretMock.createSecret('secreteName', expected);
+      const received = await secretMock.createSecret("secreteName", expected);
       expect(received).toEqual(expected);
     });
 
-    test('should returned sucess Put secrete ', async () => {
-      const secreteValue = { cat_name_1: 'Somwang' };
+    test("should returned sucess Put secrete ", async () => {
+      const secreteValue = { cat_name_1: "Somwang" };
       const expected = { cat_name_2: faker.animal.cat() };
       clientMock.on(GetSecretValueCommand).resolves({
         SecretString: JSON.stringify(secreteValue),
@@ -43,60 +42,60 @@ describe('AWS Secrets Manager', () => {
       clientMock
         .on(PutSecretValueCommand)
         .resolves({ ...expected, ...secreteValue });
-      const received = await secretMock.putSecertString('secreteName', {
+      const received = await secretMock.putSecertString("secreteName", {
         ...expected,
       });
       expect(received).toEqual({ ...secreteValue, ...expected });
     });
 
-    test('should returned sucess Update secrete ', async () => {
+    test("should returned sucess Update secrete ", async () => {
       const expected = { cat_name_2: faker.animal.cat() };
       clientMock.on(UpdateSecretCommand).resolves(expected);
       const received = await secretMock.updateSecertString(
-        'secreteName',
-        expected,
+        "secreteName",
+        expected
       );
       expect(received).toEqual(expected);
     });
 
-    test('should returned sucess Get secrete string response all ', async () => {
+    test("should returned sucess Get secrete string response all ", async () => {
       const expected = { my_secret_key: faker.string.uuid() };
       clientMock.on(GetSecretValueCommand).resolves({
         SecretString: JSON.stringify(expected),
       });
       const received = await secretMock.getSecretStringResponseAll(
-        'secreteName',
+        "secreteName"
       );
       expect(received.SecretString).toEqual(JSON.stringify(expected));
     });
 
-    test('should returned sucess Get secrete string plaintext ', async () => {
+    test("should returned sucess Get secrete string plaintext ", async () => {
       const expected = faker.string.uuid();
       clientMock.on(GetSecretValueCommand).resolves({
         SecretString: expected,
       });
-      const received = await secretMock.getSecretStringPlaintext('secreteName');
+      const received = await secretMock.getSecretStringPlaintext("secreteName");
       expect(received).toBe(expected);
     });
 
-    test('should returned sucess Get secrete string ', async () => {
+    test("should returned sucess Get secrete string ", async () => {
       const expected = { my_secret_key: faker.string.uuid() };
       clientMock.on(GetSecretValueCommand).resolves({
         SecretString: JSON.stringify(expected),
       });
-      const received = await secretMock.getSecretString('secreteName');
+      const received = await secretMock.getSecretString("secreteName");
       expect(received).toEqual(expected);
     });
 
-    test('should returned sucess Delete secrete ', async () => {
-      const expected = 'success';
+    test("should returned sucess Delete secrete ", async () => {
+      const expected = "success";
       clientMock.on(DeleteSecretCommand).resolves(expected);
-      const received = await secretMock.deleteSecretString('secreteName');
+      const received = await secretMock.deleteSecretString("secreteName");
       expect(received).toEqual(expected);
     });
   });
 
-  describe('Case error', () => {
+  describe("Case error", () => {
     const clientMock = mockClient(client);
     const secretMock = new SecretsManager(clientMock);
     beforeEach(() => {});
@@ -105,61 +104,61 @@ describe('AWS Secrets Manager', () => {
       jest.clearAllMocks();
     });
 
-    test('should returned error Create secrete ', async () => {
-      clientMock.on(CreateSecretCommand).rejects(new Error('error'));
+    test("should returned error Create secrete ", async () => {
+      clientMock.on(CreateSecretCommand).rejects(new Error("error"));
       const received = await secretMock
-        .createSecret('secreteName', {})
+        .createSecret("secreteName", {})
         .catch((error) => error.message);
-      expect(received).toEqual('error');
+      expect(received).toEqual("error");
     });
 
-    test('should returned error Put secrete ', async () => {
-      clientMock.on(GetSecretValueCommand).rejects(new Error('error'));
-      clientMock.on(PutSecretValueCommand).rejects(new Error('error'));
+    test("should returned error Put secrete ", async () => {
+      clientMock.on(GetSecretValueCommand).rejects(new Error("error"));
+      clientMock.on(PutSecretValueCommand).rejects(new Error("error"));
       const received = await secretMock
-        .putSecertString('secreteName', {})
+        .putSecertString("secreteName", {})
         .catch((error) => error.message);
-      expect(received).toEqual('error');
+      expect(received).toEqual("error");
     });
 
-    test('should returned error Update secrete ', async () => {
-      clientMock.on(UpdateSecretCommand).rejects(new Error('error'));
+    test("should returned error Update secrete ", async () => {
+      clientMock.on(UpdateSecretCommand).rejects(new Error("error"));
       const received = await secretMock
-        .updateSecertString('secreteName', {})
+        .updateSecertString("secreteName", {})
         .catch((error) => error.message);
-      expect(received).toEqual('error');
+      expect(received).toEqual("error");
     });
 
-    test('should returned error Get secrete string response all ', async () => {
-      clientMock.on(GetSecretValueCommand).rejects(new Error('error'));
+    test("should returned error Get secrete string response all ", async () => {
+      clientMock.on(GetSecretValueCommand).rejects(new Error("error"));
       const received = await secretMock
-        .getSecretStringResponseAll('secreteName', {})
+        .getSecretStringResponseAll("secreteName", {})
         .catch((error) => error.message);
-      expect(received).toEqual('error');
+      expect(received).toEqual("error");
     });
 
-    test('should returned error Get secrete string plaintext ', async () => {
-      clientMock.on(GetSecretValueCommand).rejects(new Error('error'));
+    test("should returned error Get secrete string plaintext ", async () => {
+      clientMock.on(GetSecretValueCommand).rejects(new Error("error"));
       const received = await secretMock
-        .getSecretStringPlaintext('secreteName', {})
+        .getSecretStringPlaintext("secreteName", {})
         .catch((error) => error.message);
-      expect(received).toEqual('error');
+      expect(received).toEqual("error");
     });
 
-    test('should returned error Get secrete string ', async () => {
-      clientMock.on(GetSecretValueCommand).rejects(new Error('error'));
+    test("should returned error Get secrete string ", async () => {
+      clientMock.on(GetSecretValueCommand).rejects(new Error("error"));
       const received = await secretMock
-        .getSecretString('secreteName', {})
+        .getSecretString("secreteName", {})
         .catch((error) => error.message);
-      expect(received).toEqual('error');
+      expect(received).toEqual("error");
     });
 
-    test('should returned error Delete secrete ', async () => {
-      clientMock.on(DeleteSecretCommand).rejects(new Error('error'));
+    test("should returned error Delete secrete ", async () => {
+      clientMock.on(DeleteSecretCommand).rejects(new Error("error"));
       const received = await secretMock
-        .deleteSecretString('secreteName', {})
+        .deleteSecretString("secreteName", {})
         .catch((error) => error.message);
-      expect(received).toEqual('error');
+      expect(received).toEqual("error");
     });
   });
 });

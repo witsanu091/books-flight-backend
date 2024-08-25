@@ -1,6 +1,9 @@
+const dotenv = require("dotenv");
 const Encryption = require("../../lib/security/Encryption");
 
 const encryption = new Encryption();
+
+dotenv.config();
 
 const encryptTextKey = process.env.ENCRYPT_KEY;
 

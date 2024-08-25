@@ -22,5 +22,9 @@
   "E0003": {
     "user_message": "Request is Incorrect",
     "developer_message": "Request is Incorrect"
+  },
+  "E0005": {
+    "user_message": "Username Or Password Incorrect",
+    "developer_message": "Username Or Password Incorrect"
   }
 }

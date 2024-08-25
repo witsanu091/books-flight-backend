@@ -17,7 +17,7 @@ const model = (Sequelize, DataTypes) => {
       passenger_size: {
         type: DataTypes.INTEGER,
       },
-      seat_option: {
+      seat_position: {
         type: DataTypes.STRING,
       },
       created_on: {

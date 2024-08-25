@@ -1,9 +1,8 @@
-/* eslint-disable global-require */
-/* eslint-disable import/no-dynamic-require */
-/* eslint-disable import/no-extraneous-dependencies */
+const dotenv = require("dotenv");
 const fs = require("fs");
 const path = require("path");
 const Sequelize = require("sequelize");
+dotenv.config();
 
 const basename = path.basename(__filename);
 const db = {};

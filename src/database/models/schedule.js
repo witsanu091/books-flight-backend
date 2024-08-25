@@ -16,6 +16,12 @@ const model = (Sequelize, DataTypes) => {
       time_landing: {
         type: DataTypes.TIME,
       },
+      time_gate: {
+        type: DataTypes.TIME,
+      },
+      hour_travel: {
+        type: DataTypes.INTEGER,
+      },
       created_on: {
         type: DataTypes.DATE,
       },

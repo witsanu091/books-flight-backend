@@ -60,6 +60,7 @@ services:
       JWT_SECRET: ${JWT_SECRET}
       DEV: ${DEV}
       IS_ENCRYPT: ${IS_ENCRYPT}
+      ENCRYPT_KEY: ${ENCRYPT_KEY}
 
   db:
     image: postgres

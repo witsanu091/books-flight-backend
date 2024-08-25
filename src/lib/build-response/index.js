@@ -1,4 +1,3 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
 const moment = require("moment-timezone");
 
 const formatTemplate = process.env.DATETIMEFORMAT || "YYYY-MM-DD HH:mm:ss";
@@ -16,7 +15,6 @@ const respond = (responses, statusCode, responseData, responseCode) => {
     isBase64Encoded: false,
     statusCode,
     body: {
-      // ...responses[responseCode][language.toUpperCase()],
       ...responses[responseCode],
       response_date_time: formatResponseDate,
       response_code: responseCode,
