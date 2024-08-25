@@ -1,0 +1,119 @@
+const { QueryTypes } = require("sequelize");
+const models = require("../models");
+
+class FlightRepository {
+  static async getAllFlight() {
+    try {
+      const model = await models;
+      const { sequelize } = model;
+
+      const result = await sequelize.query(
+        ` SELECT 
+        f.flight_id,
+        f.flight_date,
+        a.airline_name,
+        a.airline_number,
+        at.airport_name AS takeoff_airport,
+        al.airport_name AS landing_airport,
+        s.round_flight,
+        s.time_gate,
+        s.time_take_off,
+        s.time_landing,
+        f.created_on,
+        f.updated_on,
+        f.enabled
+      FROM 
+        flights f
+      INNER JOIN 
+        airlines a ON f.airline_id = a.airline_id
+      INNER JOIN 
+        airports at ON f.airport_take_off_id = at.airport_id
+      INNER JOIN 
+        airports al ON f.airport_landing_id = al.airport_id
+      INNER JOIN 
+        schedules s ON f.schedule_id = s.schedule_id
+      ORDER BY 
+        f.flight_date ASC;`,
+        {
+          type: QueryTypes.SELECT,
+          raw: true,
+        }
+      );
+
+      console.log("checkTablePartition successfully::", result);
+    } catch (error) {
+      console.log("🚀  checkTablePartition  error:", error);
+    }
+  }
+  static async getFlightByKey(where) {
+    try {
+      const { airport_take_off, airport_landing, flight_date } = where;
+      let additionalConditions = [];
+
+      if (airport_take_off) {
+        additionalConditions.push(`at.airport_id = :airport_take_off`);
+      }
+      if (airport_landing) {
+        additionalConditions.push(`al.airport_id = :airport_landing`);
+      }
+      if (flight_date) {
+        additionalConditions.push(`f.flight_date = :flight_date`);
+      }
+      additionalConditions.push(`f.enabled = true`);
+
+      const whereClause = additionalConditions.length
+        ? `WHERE ${additionalConditions.join(" AND ")}`
+        : "";
+
+      const model = await models;
+      const { sequelize } = model;
+
+      const query = `
+        SELECT 
+          f.flight_id,
+          f.flight_date,
+          a.airline_name,
+          a.airline_number,
+          at.airport_name AS takeoff_airport,
+          al.airport_name AS landing_airport,
+          s.round_flight,
+          s.time_gate,
+          s.time_take_off,
+          s.time_landing,
+          f.created_on,
+          f.updated_on,
+          f.enabled,
+          s.hour_travel 
+        FROM 
+          flight f
+        INNER JOIN 
+          airline a ON f.airline_id = a.airline_id
+        INNER JOIN 
+          airport at ON f.airport_take_off_id = at.airport_id
+        INNER JOIN 
+          airport al ON f.airport_landing_id = al.airport_id
+        INNER JOIN 
+          schedule s ON f.schedule_id = s.schedule_id
+        ${whereClause}
+        ORDER BY 
+          f.flight_date ASC;
+      `;
+
+      const result = await sequelize.query(query, {
+        replacements: {
+          airport_take_off,
+          airport_landing,
+          flight_date,
+        },
+        type: QueryTypes.SELECT,
+        raw: true,
+      });
+      console.log("🚀  flightRepository  result:", result);
+      return result;
+    } catch (error) {
+      console.error("🚀  flightRepository  error:", error);
+    }
+  }
+}
+
+module.exports = FlightRepository;

@@ -38,7 +38,15 @@ const userSignInSchema = z.object({
   user_role: z.string().min(2).max(20),
 });
 
+const searchFlightSchema = z.object({
+  airport_take_off: z.string().uuid(),
+  airport_landing: z.string().uuid(),
+  flight_date: z.string(),
+  // .regex(dateTimeRegex, "Date must be in the format YYYY-MM-DD HH:mm:ss"),
+});
+
 module.exports = {
   userSchema,
   userSignInSchema,
+  searchFlightSchema,
 };

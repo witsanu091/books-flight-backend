@@ -133,20 +133,6 @@ class Encryption {
     const hash = crypto.createHash(this.sha256);
     return hash.update(txt).digest("base64");
   }
-
-  authenticateToken(request) {
-    const authHeader = request.headers["authorization"];
-    const token = authHeader && authHeader.split(" ")[1];
-
-    if (!token) return { status: 401, message: "Access Denied", data: null };
-
-    jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
-      if (err) return { status: 403, message: "Invalid Token", data: null };
-      return { status: 200, message: "validate pass", data: user };
-      // req.user = user;
-      // next();
-    });
-  }
 }
 
 module.exports = Encryption;

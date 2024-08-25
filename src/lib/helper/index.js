@@ -34,6 +34,29 @@ const detectLanguageFromHeaders = (headers) => {
 
 const errorIsItemNotFound = (error) => error.name === "ItemNotFoundException";
 
+const validateHeader = (request) => {
+  const apiKey = process.env.API_KEY;
+  const channel = process.env.CHANNEL_CODE;
+
+  const authHeader = request.headers["authorization"];
+  const apiKeyHeader = request.headers["api-key"];
+  const channelHeader = request.headers["channel"];
+
+  if (apiKeyHeader !== apiKey)
+    return { status: 402, message: "Unauthorized", data: null };
+  if (channelHeader !== channel)
+    return { status: 402, message: "Unauthorized", data: null };
+
+  const token = authHeader && authHeader.split(" ")[1];
+
+  if (!token) return { status: 401, message: "Access Denied", data: null };
+
+  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+    if (err) return { status: 403, message: "Invalid Token", data: null };
+    return { status: 200, message: "validate pass", data: user };
+  });
+};
+
 const allowHeaders = (headers = {}) => {
   const origin = "*";
   return {
@@ -108,4 +131,5 @@ module.exports = {
   decryptRequestBody,
   genUUID,
   insertServiceHistoryLog,
+  validateHeader,
 };

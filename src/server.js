@@ -5,6 +5,7 @@ const cors = require("cors");
 const morgan = require("morgan");
 const helmet = require("helmet");
 const authRouter = require("./api/router/authenticationRoute");
+const flightRouter = require("./api/router/searchRoute");
 const responseMessage = require("../src/lib/build-response/responseMessage.json");
 
 dotenv.config();
@@ -18,7 +19,7 @@ app.use(bodyParser.json());
 app.use(morgan("combined"));
 app.use(helmet());
 
-// app.use("/api", userRouter);
+app.use("/api/flight", flightRouter);
 app.use("/api/auth", authRouter);
 
 app.use((err, req, res, next) => {
