@@ -8,12 +8,13 @@ class FlightRepository {
       const { sequelize } = model;
 
       const result = await sequelize.query(
-        ` SELECT 
+        `SELECT 
         f.flight_id,
         f.flight_date,
         a.airline_name,
         a.airline_number,
         at.airport_name AS takeoff_airport,
+        at.airport_id AS takeoff_airport_id,
         al.airport_name AS landing_airport,
         s.round_flight,
         s.time_gate,
@@ -21,18 +22,19 @@ class FlightRepository {
         s.time_landing,
         f.created_on,
         f.updated_on,
-        f.enabled
+        f.enabled,
+        s.hour_travel 
       FROM 
-        flights f
-      INNER JOIN 
-        airlines a ON f.airline_id = a.airline_id
-      INNER JOIN 
-        airports at ON f.airport_take_off_id = at.airport_id
-      INNER JOIN 
-        airports al ON f.airport_landing_id = al.airport_id
-      INNER JOIN 
-        schedules s ON f.schedule_id = s.schedule_id
-      ORDER BY 
+        flight f
+      LEFT JOIN 
+        airline a ON f.airline_id = a.airline_id
+      LEFT JOIN 
+        airport at ON f.airport_take_off_id = at.airport_id
+      LEFT JOIN 
+        airport al ON f.airport_landing_id = al.airport_id
+      LEFT JOIN 
+        schedule s ON f.schedule_id = s.schedule_id
+     ORDER BY 
         f.flight_date ASC;`,
         {
           type: QueryTypes.SELECT,
@@ -40,7 +42,7 @@ class FlightRepository {
         }
       );
 
-      console.log("checkTablePartition successfully::", result);
+      return result;
     } catch (error) {
       console.log("🚀  checkTablePartition  error:", error);
     }
@@ -69,34 +71,35 @@ class FlightRepository {
       const { sequelize } = model;
 
       const query = `
-        SELECT 
-          f.flight_id,
-          f.flight_date,
-          a.airline_name,
-          a.airline_number,
-          at.airport_name AS takeoff_airport,
-          al.airport_name AS landing_airport,
-          s.round_flight,
-          s.time_gate,
-          s.time_take_off,
-          s.time_landing,
-          f.created_on,
-          f.updated_on,
-          f.enabled,
-          s.hour_travel 
-        FROM 
-          flight f
-        INNER JOIN 
-          airline a ON f.airline_id = a.airline_id
-        INNER JOIN 
-          airport at ON f.airport_take_off_id = at.airport_id
-        INNER JOIN 
-          airport al ON f.airport_landing_id = al.airport_id
-        INNER JOIN 
-          schedule s ON f.schedule_id = s.schedule_id
+      SELECT 
+        f.flight_id,
+        f.flight_date,
+        a.airline_name,
+        a.airline_number,
+        at.airport_name AS takeoff_airport,
+        at.airport_id AS takeoff_airport_id,
+        al.airport_name AS landing_airport,
+        s.round_flight,
+        s.time_gate,
+        s.time_take_off,
+        s.time_landing,
+        f.created_on,
+        f.updated_on,
+        f.enabled,
+        s.hour_travel 
+      FROM 
+        flight f
+      LEFT JOIN 
+        airline a ON f.airline_id = a.airline_id
+      LEFT JOIN 
+        airport at ON f.airport_take_off_id = at.airport_id
+      LEFT JOIN 
+        airport al ON f.airport_landing_id = al.airport_id
+      LEFT JOIN 
+        schedule s ON f.schedule_id = s.schedule_id
         ${whereClause}
-        ORDER BY 
-          f.flight_date ASC;
+      ORDER BY 
+        f.flight_date ASC;
       `;
 
       const result = await sequelize.query(query, {

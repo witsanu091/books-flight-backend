@@ -34,6 +34,20 @@ const model = (Sequelize, DataTypes) => {
       tableName: "airport",
       createdAt: false,
       updatedAt: false,
+      indexes: [
+        {
+          name: "idx_item_airport_name",
+          fields: ["airport_name"],
+        },
+        {
+          name: "idx_item_location",
+          fields: ["location"],
+        },
+        {
+          name: "idx_item_airport_name_location",
+          fields: ["airport_name", "location"],
+        },
+      ],
     }
   );
 };
