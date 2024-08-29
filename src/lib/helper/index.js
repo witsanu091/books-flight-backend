@@ -1,4 +1,5 @@
 const { v4: uuid } = require("uuid");
+const jwt = require("jsonwebtoken");
 const moment = require("moment-timezone");
 const responseMessage = require("../build-response/responseMessage.json");
 const { responsePartnerAPI } = require("../formatBuildAPI/buildResponseParam");
@@ -42,19 +43,29 @@ const validateHeader = (request) => {
   const apiKeyHeader = request.headers["api-key"];
   const channelHeader = request.headers["channel"];
 
-  if (apiKeyHeader !== apiKey)
-    return { status: 402, message: "Unauthorized", data: null };
-  if (channelHeader !== channel)
-    return { status: 402, message: "Unauthorized", data: null };
+  let resultHeader = {
+    status: 402,
+    message: "Unauthorized",
+    data: null,
+  };
 
-  const token = authHeader && authHeader.split(" ")[1];
+  if (apiKeyHeader !== apiKey) return resultHeader;
+  if (channelHeader !== channel) return resultHeader;
 
-  if (!token) return { status: 401, message: "Access Denied", data: null };
+  const token = authHeader && authHeader.split(` `)[1];
 
+  console.log("🚀  authHeader:", authHeader);
+  if (!token) return { ...resultHeader, status: 401 };
+  let dataUser;
   jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
-    if (err) return { status: 403, message: "Invalid Token", data: null };
-    return { status: 200, message: "validate pass", data: user };
+    console.log("🚀  user:", user);
+    if (err) return { ...resultHeader, status: 403 };
+    dataUser = user;
+    resultHeader.status = 200;
   });
+  if (resultHeader.status !== 200) return resultHeader;
+
+  return { status: 200, message: "validate pass", data: dataUser };
 };
 
 const allowHeaders = (headers = {}) => {

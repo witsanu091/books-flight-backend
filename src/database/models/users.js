@@ -77,7 +77,6 @@ const model = (Sequelize, DataTypes) => {
     }
   );
 
-  // Encrypt sensitive fields before saving (create or update)
   Users.beforeCreate((user) => {
     user.first_name = encryptCBC256(user.first_name);
     user.last_name = encryptCBC256(user.last_name);

@@ -42,11 +42,53 @@ const searchFlightSchema = z.object({
   airport_take_off: z.string().uuid(),
   airport_landing: z.string().uuid(),
   flight_date: z.string(),
-  // .regex(dateTimeRegex, "Date must be in the format YYYY-MM-DD HH:mm:ss"),
+});
+
+const customerBookingSchema = z.object({
+  customer_name: z.string().optional(),
+  customer_email: z.string().optional(),
+  customer_phone: z.string().optional(),
+});
+
+const bookingSchema = z.object({
+  flight_id: z.string().uuid().optional(),
+  user_id: z.string().uuid().optional(),
+  customer_amount: z
+    .number()
+    .int()
+    .min(1, { message: "At least one customer is required" }),
+  customer_list_1: customerBookingSchema,
+  customer_list_2: customerBookingSchema.optional(),
+  customer_list_3: customerBookingSchema.optional(),
+  book_status: z.string().optional(),
+  payment_method: z.string().min(1),
+  payment_gateway: z
+    .string()
+    .min(1, { message: "Payment gateway is required" }),
+  total_price: z
+    .number()
+    .positive({ message: "Total price must be a positive number" }),
+  travel_status: z.string().optional(),
+  seat1: z.string().optional(),
+  seat2: z.string().optional(),
+  seat3: z.string().optional(),
+});
+
+const getUserSchema = z.object({
+  user_id: z.string().uuid(),
+  user_role: z.string().optional(),
+});
+
+const getBookingSchema = z.object({
+  user_id: z.string().uuid(),
+  book_no: z.string().min(8).max(8),
 });
 
 module.exports = {
   userSchema,
   userSignInSchema,
   searchFlightSchema,
+  bookingSchema,
+  getUserSchema,
+  getBookingSchema,
 };

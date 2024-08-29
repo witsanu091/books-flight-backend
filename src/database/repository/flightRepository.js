@@ -9,21 +9,21 @@ class FlightRepository {
 
       const result = await sequelize.query(
         `SELECT 
-        f.flight_id,
-        f.flight_date,
-        a.airline_name,
-        a.airline_number,
-        at.airport_name AS takeoff_airport,
-        at.airport_id AS takeoff_airport_id,
-        al.airport_name AS landing_airport,
-        s.round_flight,
-        s.time_gate,
-        s.time_take_off,
-        s.time_landing,
-        f.created_on,
-        f.updated_on,
-        f.enabled,
-        s.hour_travel 
+          f.flight_id,
+          f.flight_date,
+          a.airline_name,
+          a.airline_number,
+          at.airport_name AS takeoff_airport,
+          at.airport_id AS takeoff_airport_id,
+          al.airport_name AS landing_airport,
+          s.round_flight,
+          s.time_gate,
+          s.time_take_off,
+          s.time_landing,
+          f.created_on,
+          f.updated_on,
+          f.enabled,
+          s.hour_travel 
       FROM 
         flight f
       LEFT JOIN 
@@ -34,7 +34,7 @@ class FlightRepository {
         airport al ON f.airport_landing_id = al.airport_id
       LEFT JOIN 
         schedule s ON f.schedule_id = s.schedule_id
-     ORDER BY 
+      ORDER BY 
         f.flight_date ASC;`,
         {
           type: QueryTypes.SELECT,

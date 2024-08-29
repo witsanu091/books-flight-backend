@@ -1,9 +1,4 @@
 const {
-  responsePartnerAPI,
-} = require("../../../lib/formatBuildAPI/buildResponseParam");
-const { insertServiceHistoryLog } = require("../../../lib/helper");
-const responseMessage = require("../../../lib/build-response/responseMessage.json");
-const {
   searchAirportService,
 } = require("../../services/search/searchAirportService");
 

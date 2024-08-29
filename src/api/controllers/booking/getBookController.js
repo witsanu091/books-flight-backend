@@ -2,23 +2,22 @@ const {
   responsePartnerAPI,
 } = require("../../../lib/formatBuildAPI/buildResponseParam");
 const {
-  decryptRequestBody,
   validateObjectToSchema,
   insertServiceHistoryLog,
   validateHeader,
 } = require("../../../lib/helper");
-const { bookingSchema } = require("../../../lib/helper/schemas");
+const { getBookingSchema } = require("../../../lib/helper/schemas");
 const responseMessage = require("../../../lib/build-response/responseMessage.json");
 const {
-  bookingFlightService,
-} = require("../../services/booking/booksFlightService");
+  getBookingService,
+} = require("../../services/booking/getBookingService");
 
-exports.bookingFlight = async (req, res, next) => {
+exports.getBooking = async (req, res, next) => {
   const isEncrypt = process.env.IS_ENCRYPT;
   const keySecret = process.env.KEY_SECRET;
   let response;
   let objectHistory = {
-    type: "Booking Flight",
+    type: "Get Booking",
     request: req.body,
     response: response,
     status: "400",
@@ -31,25 +30,26 @@ exports.bookingFlight = async (req, res, next) => {
   if (validateHeaderStatus !== 200) {
     return res.json({ message });
   }
-  try {
-    const responseDecryptBody = decryptRequestBody({
-      req,
+  const query = req.query.book_no;
+  if (!query) {
+    response = responsePartnerAPI({
       isEncrypt,
       keySecret,
+      responses: responseMessage,
+      statusCode: 400,
+      responseData: { errors },
+      responseCode: "E0000",
     });
+    return res.json(response);
+  }
 
-    if (!responseDecryptBody.status) {
-      response = responseDecryptBody.data;
-      return res.json(response);
-    }
-    bodyDecrypt = responseDecryptBody.data;
-    console.log("bodyDecrypt ::", bodyDecrypt);
-
+  try {
+    let bodyParam = { user_id: dataUser.user_id, book_no: query };
     const {
       success,
       data: body,
       errors,
-    } = validateObjectToSchema(bodyDecrypt, bookingSchema);
+    } = validateObjectToSchema(bodyParam, getBookingSchema);
 
     if (!success) {
       response = responsePartnerAPI({
@@ -63,7 +63,7 @@ exports.bookingFlight = async (req, res, next) => {
       return res.json(response);
     }
     console.log("🚀  body:", body);
-    const { status, data } = await bookingFlightService(body);
+    const { status, data } = await getBookingService(body);
     if (status !== 200) {
       response = responsePartnerAPI({
         isEncrypt,

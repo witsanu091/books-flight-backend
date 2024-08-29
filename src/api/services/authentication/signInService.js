@@ -13,11 +13,17 @@ const signInService = async (body) => {
         message: "Username or Password Invalid",
         data: null,
       };
-    delete result.password;
+    result = {
+      user_id: result.user_id,
+      user_role: result.user_role,
+    };
+
     const token = jwt.sign(result, process.env.JWT_SECRET, {
       expiresIn: "24h",
     });
-    result = { token_id: token, user_profile: result };
+
+    result = { ...result, token_id: token };
+
     return { status: 200, message: "success", data: result };
   } catch (error) {
     console.error("🚀 ~ signOnService ~ error:", error);

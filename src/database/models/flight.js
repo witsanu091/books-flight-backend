@@ -22,6 +22,9 @@ const model = (Sequelize, DataTypes) => {
       flight_date: {
         type: DataTypes.DATE,
       },
+      price: {
+        type: DataTypes.INTEGER,
+      },
       created_on: {
         type: DataTypes.DATE,
       },
