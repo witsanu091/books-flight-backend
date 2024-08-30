@@ -23,17 +23,20 @@ const userSchema = z.object({
   created_on: z
     .string()
     .regex(dateTimeRegex, "Date must be in the format YYYY-MM-DD HH:mm:ss")
-    .default(() => new Date().toISOString().slice(0, 19).replace("T", " ")),
+    .default(() => new Date().toISOString().slice(0, 19).replace("T", " "))
+    .optional(),
   updated_on: z
     .string()
     .regex(dateTimeRegex, "Date must be in the format YYYY-MM-DD HH:mm:ss")
-    .default(() => new Date().toISOString().slice(0, 19).replace("T", " ")),
+    .default(() => new Date().toISOString().slice(0, 19).replace("T", " "))
+    .optional(),
   enabled: z.boolean().default(true),
   user_role: z.string().min(2).max(20),
 });
 
 const userSignInSchema = z.object({
-  user_name: z.string().min(3).max(255),
+  user_name: z.string().min(3).max(255).optional(),
+  email: z.string().min(3).optional(),
   password: z.string().min(8).max(255),
   user_role: z.string().min(2).max(20),
 });

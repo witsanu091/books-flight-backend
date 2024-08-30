@@ -5,6 +5,12 @@ const { encryptCBC256 } = require("../../../database/tools/encryptionField");
 const signInService = async (body) => {
   console.time("🚀 ~ signOnService ~ time");
   try {
+    if (!body.email) {
+      delete body.email;
+    } else {
+      body.email = encryptCBC256(body.email);
+    }
+    if (!body.user_name) delete body.user_name;
     body = { ...body, password: encryptCBC256(body.password), enabled: true };
     let result = await UserRepository.getByKey(body);
     if (result.length === 0)

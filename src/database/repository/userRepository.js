@@ -1,4 +1,8 @@
+const moment = require("moment-timezone");
 const models = require("../models");
+
+const formatTemplate = process.env.DATETIMEFORMAT || "YYYY-MM-DD HH:mm:ss";
+const timeZone = "Asia/Bangkok";
 
 class UserRepository {
   static async add(item) {
@@ -6,9 +10,12 @@ class UserRepository {
     const model = await models;
     const { Users } = model;
     try {
-      return Users.create(item, {
-        raw: true,
-      });
+      return Users.create(
+        { ...item, created_on: moment().tz(timeZone).format(formatTemplate) },
+        {
+          raw: true,
+        }
+      );
     } catch (error) {
       console.log("[Error] Add Users", error);
       throw error;
