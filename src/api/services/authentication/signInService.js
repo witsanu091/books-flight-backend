@@ -3,7 +3,7 @@ const UserRepository = require("../../../database/repository/userRepository");
 const { encryptCBC256 } = require("../../../database/tools/encryptionField");
 
 const signInService = async (body) => {
-  console.time("🚀 ~ signOnService ~ time");
+  console.time("🚀 ~ signInService ~ time");
   try {
     if (!body.email) {
       delete body.email;
@@ -35,7 +35,7 @@ const signInService = async (body) => {
     console.error("🚀 ~ signOnService ~ error:", error);
     throw { status: 500, message: error, data: null };
   } finally {
-    console.timeEnd("🚀 ~ signOnService ~ time");
+    console.timeEnd("🚀 ~ signInService ~ time");
   }
 };
 

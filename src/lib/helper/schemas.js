@@ -35,8 +35,8 @@ const userSchema = z.object({
 });
 
 const userSignInSchema = z.object({
-  user_name: z.string().min(3).max(255).optional(),
-  email: z.string().min(3).optional(),
+  user_name: z.string().optional(),
+  email: z.string().optional(),
   password: z.string().min(8).max(255),
   user_role: z.string().min(2).max(20),
 });

@@ -4,6 +4,7 @@ const {
 
 exports.searchAirport = async (req, res, next) => {
   const query = req.query.q;
+  console.log("🚀  query:", query);
   if (!query) {
     return res.json([]);
   }

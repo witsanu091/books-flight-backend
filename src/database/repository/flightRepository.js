@@ -35,7 +35,8 @@ class FlightRepository {
       LEFT JOIN 
         schedule s ON f.schedule_id = s.schedule_id
       ORDER BY 
-        f.flight_date ASC;`,
+        RANDOM()
+      LIMIT 6;`,
         {
           type: QueryTypes.SELECT,
           raw: true,
