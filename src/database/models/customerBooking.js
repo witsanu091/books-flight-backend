@@ -33,6 +33,14 @@ const model = (Sequelize, DataTypes) => {
           return decryptCBC256(storedValue);
         },
       },
+      customer_cid: {
+        type: DataTypes.STRING,
+        allowNull: true,
+        get() {
+          const storedValue = this.getDataValue("customer_cid");
+          return decryptCBC256(storedValue);
+        },
+      },
       sub_user: {
         type: DataTypes.UUID,
         allowNull: true,
@@ -60,12 +68,14 @@ const model = (Sequelize, DataTypes) => {
     customer.customer_name = encryptCBC256(customer.customer_name);
     customer.customer_email = encryptCBC256(customer.customer_email);
     customer.customer_phone = encryptCBC256(customer.customer_phone);
+    customer.customer_cid = encryptCBC256(customer.customer_cid);
   });
 
   CustomerBooking.beforeUpdate((customer) => {
     customer.customer_name = encryptCBC256(customer.customer_name);
     customer.customer_email = encryptCBC256(customer.customer_email);
     customer.customer_phone = encryptCBC256(customer.customer_phone);
+    customer.customer_cid = encryptCBC256(customer.customer_cid);
   });
   return CustomerBooking;
 };

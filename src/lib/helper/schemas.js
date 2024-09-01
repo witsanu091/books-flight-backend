@@ -51,6 +51,7 @@ const customerBookingSchema = z.object({
   customer_name: z.string().optional(),
   customer_email: z.string().optional(),
   customer_phone: z.string().optional(),
+  customer_cid: z.string().optional(),
 });
 
 const bookingSchema = z.object({
