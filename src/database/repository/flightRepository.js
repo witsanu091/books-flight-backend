@@ -23,6 +23,7 @@ class FlightRepository {
           f.created_on,
           f.updated_on,
           f.enabled,
+          f.price,
           s.hour_travel 
       FROM 
         flight f
@@ -87,6 +88,7 @@ class FlightRepository {
         f.created_on,
         f.updated_on,
         f.enabled,
+        f.price,
         s.hour_travel 
       FROM 
         flight f
